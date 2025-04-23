@@ -19,13 +19,20 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public List<User> saveAllUsers(List<UserDto> userDtos) {
+        List<User> users = userDtos.stream()
+                .map(userDto -> User.build(0, userDto.getName(), userDto.getEmail(), userDto.getMobile(),
+                        userDto.getGender(), userDto.getAge(), userDto.getNationality()))
+                .toList();
+        return userRepository.saveAll(users);
+    }
 
 
     public List<User> findAll(){
         return userRepository.findAll();
     }
 
-    public User getUserById(int id) throws UserNotFoundException {
+    public User findUserById(int id) throws UserNotFoundException {
         User user= userRepository.findById(id);
         if(user!=null){
             return user;
@@ -33,6 +40,23 @@ public class UserService {
             throw new UserNotFoundException("user not found with id : "+id);
         }
     }
+
+    public List<User> findByName(String name) throws UserNotFoundException {
+        List<User> users = userRepository.findByName(name);
+        if (users.isEmpty()) {
+            throw new UserNotFoundException("No users found with name: " + name);
+        }
+        return users;
+    }
+
+    public User findByEmail(String email) throws UserNotFoundException {
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with email: " + email);
+        }
+        return user;
+    }
+
 
     public User updateUser(int id, UserDto userDto) throws UserNotFoundException {
         User existingUser = userRepository.findById(id);
@@ -49,6 +73,10 @@ public class UserService {
         // Save the updated user
         return userRepository.save(existingUser);
     }
+    public void deleteAllUsers() {
+        userRepository.deleteAll();
+    }
+
     public void deleteUserById(int id) throws UserNotFoundException {
         User user = userRepository.findById(id);
         if (user == null) {

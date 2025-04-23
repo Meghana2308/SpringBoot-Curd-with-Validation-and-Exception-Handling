@@ -19,19 +19,43 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    // 1. Save single user
     @PostMapping("/signup")
     public ResponseEntity<User> saveUser(@RequestBody @Valid UserDto userDto ){
         return new ResponseEntity<>(userService.saveUser(userDto), HttpStatus.CREATED);
     }
 
+    // 2. Save multiple users
+    @PostMapping("/saveAll")
+    public ResponseEntity<List<User>> saveAllUsers(@RequestBody @Valid List<UserDto> userDtos) {
+        return new ResponseEntity<>(userService.saveAllUsers(userDtos), HttpStatus.CREATED);
+    }
+
+    // 3. Find all users
     @GetMapping("/allUsers/")
     public ResponseEntity<List<User>> findAll(){
         return ResponseEntity.ok(userService.findAll());
     }
+
+    // 4. Get user by id
     @GetMapping("/usersId/")
-    public ResponseEntity<User> getUserById(@PathVariable int id)throws UserNotFoundException {
-        return ResponseEntity.ok(userService.getUserById(id));
+    public ResponseEntity<User> getUserById(@PathVariable int id) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.findUserById(id));
     }
+
+    // 5. Find users by name
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<User>> getUsersByName(@PathVariable String name) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.findByName(name));
+    }
+
+    // 6. Find user by email
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) throws UserNotFoundException {
+        return ResponseEntity.ok(userService.findByEmail(email));
+    }
+
+    // 7. Update user by id
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody @Valid UserDto userDto) {
         try {
@@ -42,6 +66,7 @@ public class UserController {
         }
     }
 
+    // 8. Delete user by id
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable int id) {
         try {
@@ -51,4 +76,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+    // 9. Delete all users
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<Void> deleteAllUsers() {
+        userService.deleteAllUsers();
+        return ResponseEntity.noContent().build();
+    }
+
 }
