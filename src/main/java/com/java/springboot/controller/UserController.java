@@ -34,25 +34,25 @@ public class UserController {
     // 3. Find all users
     @GetMapping("/allUsers/")
     public ResponseEntity<List<User>> findAll(){
-        return ResponseEntity.ok(userService.findAll());
+        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
     // 4. Get user by id
     @GetMapping("/usersId/")
     public ResponseEntity<User> getUserById(@PathVariable int id) throws UserNotFoundException {
-        return ResponseEntity.ok(userService.findUserById(id));
+        return  new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
     }
 
     // 5. Find users by name
     @GetMapping("/name/{name}")
     public ResponseEntity<List<User>> getUsersByName(@PathVariable String name) throws UserNotFoundException {
-        return ResponseEntity.ok(userService.findByName(name));
+        return new ResponseEntity<>(userService.findByName(name), HttpStatus.OK);
     }
 
     // 6. Find user by email
     @GetMapping("/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) throws UserNotFoundException {
-        return ResponseEntity.ok(userService.findByEmail(email));
+        return new ResponseEntity<>(userService.findByEmail(email), HttpStatus.OK);
     }
 
     // 7. Update user by id
@@ -60,7 +60,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody @Valid UserDto userDto) {
         try {
             User updatedUser = userService.updateUser(id, userDto);
-            return ResponseEntity.ok(updatedUser);
+            return new ResponseEntity<>(updatedUser, HttpStatus.OK);
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
